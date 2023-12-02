@@ -21,8 +21,6 @@ pub fn sumPowers(filename: []const u8) !i32 {
         var fewestGreen: i32 = 0;
 
         var iter = std.mem.split(u8, line, ": ");
-        const gameId = iter.next().?;
-        _ = gameId;
         const handsIterator = iter.next().?;
 
         var hands = std.mem.split(u8, handsIterator, "; ");
