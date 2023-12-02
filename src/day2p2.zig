@@ -1,30 +1,29 @@
 const std = @import("std");
 
+const embeddedData = @embedFile("data/day2p2.txt");
+
 pub fn main() !void {
-    const result: i32 = try sumPowers("input/day2p2.txt");
+    const result: i32 = try sumPowers();
     std.debug.print("{d}\n", .{result});
 }
 
-pub fn sumPowers(filename: []const u8) !i32 {
-    var file = try std.fs.cwd().openFile(filename, .{});
-
-    var buf_reader = std.io.bufferedReader(file.reader());
-    var in_stream = buf_reader.reader();
-
-    var buf: [1024]u8 = undefined;
-
+pub fn sumPowers() !i32 {
     var powerSums: i32 = 0;
 
-    while (try in_stream.readUntilDelimiterOrEof(&buf, '\n')) |line| {
+    var lines = std.mem.split(u8, embeddedData, "\n");
+
+    while (lines.next()) |line| {
         var fewestRed: i32 = 0;
         var fewestBlue: i32 = 0;
         var fewestGreen: i32 = 0;
 
-        var iter = std.mem.split(u8, line, ": ");
-        const handsIterator = iter.next().?;
+        var gameIterator = std.mem.split(u8, line, ": ");
+        const gameId = gameIterator.next().?;
+        _ = gameId;
+        const hands = gameIterator.next().?;
 
-        var hands = std.mem.split(u8, handsIterator, "; ");
-        while (hands.next()) |hand| {
+        var handsIterator = std.mem.split(u8, hands, "; ");
+        while (handsIterator.next()) |hand| {
             var rolls = std.mem.split(u8, hand, ", ");
             while (rolls.next()) |roll| {
                 var dieValues = std.mem.split(u8, roll, " ");
