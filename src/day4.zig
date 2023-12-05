@@ -20,25 +20,12 @@ pub fn calculateTicketScore(
 ) !u16 {
     var totalTicketScore: u16 = 0;
     for (tickets.items) |ticket| {
-        const ticketScore: u16 = try getTicketScore(ticket);
-        totalTicketScore = totalTicketScore + ticketScore;
-    }
-    return totalTicketScore;
-}
-pub fn getTicketScore(ticket: Ticket) !u16 {
-    var ticketScore: u16 = 0;
-    var winningNumbersIterator = ticket.winningNumbers.iterator();
-    while (winningNumbersIterator.next()) |number| {
-        const matchingValue = ticket.picks.get(number.key_ptr.*);
-        if (matchingValue) |_| {
-            if (ticketScore == 0) {
-                ticketScore = ticketScore + 1;
-            } else {
-                ticketScore = ticketScore * 2;
-            }
+        const winningNumbers: u16 = try countWinningNumbers(ticket);
+        if (winningNumbers > 0) {
+            totalTicketScore = totalTicketScore + std.math.pow(u16, 2, winningNumbers - 1);
         }
     }
-    return ticketScore;
+    return totalTicketScore;
 }
 
 // part 2
