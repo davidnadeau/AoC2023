@@ -31,6 +31,19 @@ pub fn main() !void {
     try part2();
 }
 
+pub fn parseFiles() !void {
+    var lines = std.mem.split(u8, embeddedData, "\n");
+    while (lines.next()) |line| {
+        var lineParts = std.mem.tokenize(u8, line, " ");
+        const hand = lineParts.next().?;
+        const bid = try std.fmt.parseInt(u32, lineParts.next().?, 10);
+        const score = try getScore(hand);
+        const scoreWithJoker = try getScoreWithJokers(hand);
+        try hands.append(HandData{ .hand = hand, .bid = bid, .score = score });
+        try handsWithJokers.append(HandData{ .hand = hand, .bid = bid, .score = scoreWithJoker });
+    }
+}
+
 pub fn part1() !void {
     std.mem.sort(HandData, hands.items, {}, compareHands);
     var totalWinning: u64 = 0;
@@ -178,18 +191,5 @@ fn getScoreWithJokers(data: []const u8) !u8 {
         }
     } else {
         return 1 + numberOfJokers;
-    }
-}
-
-pub fn parseFiles() !void {
-    var lines = std.mem.split(u8, embeddedData, "\n");
-    while (lines.next()) |line| {
-        var lineParts = std.mem.tokenize(u8, line, " ");
-        const hand = lineParts.next().?;
-        const bid = try std.fmt.parseInt(u32, lineParts.next().?, 10);
-        const score = try getScore(hand);
-        const scoreWithJoker = try getScoreWithJokers(hand);
-        try hands.append(HandData{ .hand = hand, .bid = bid, .score = score });
-        try handsWithJokers.append(HandData{ .hand = hand, .bid = bid, .score = scoreWithJoker });
     }
 }
